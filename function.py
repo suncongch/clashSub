@@ -1,7 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from importlib.abc import ExecutionLoader
 import re
-from tkinter import EXCEPTION
 import requests
 import urllib
 from random import randint, random
