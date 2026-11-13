@@ -6,6 +6,7 @@ import base64
 from urllib.parse import quote, urlencode
 from ini import *
 from pathlib import Path
+from urlConfig import proxies
 
 includeCondition = (
     r'日本(?!\s*3\b).*|'
@@ -36,7 +37,7 @@ def fetch_subscribe(url: str) -> str:
         "Accept": "*/*",
         "Accept-Encoding": "identity"
     }
-    resp = requests.get(url, headers=headers, timeout=10)
+    resp = requests.get(url, headers=headers, proxies=proxies, timeout=10)
     raw = resp.text 
     return resp.text
 
