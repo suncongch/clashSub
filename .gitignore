@@ -3,6 +3,7 @@ __pycache__/
 .env
 *.log
 
+data/node_cache.json
 # SSL certificates and private keys
 ssl/*.key
 ssl/*.pem

@@ -23,6 +23,6 @@ netflixSubUrl = [
                 "https://tg.govlist.top/api/v1/client/subscribe?token=f527ba7e39666421955cb1301798b214"
                 ]
 
-proxies = {
+httpProxies = {
     "http": "http://andysun:andysun@andysun.cool:1226",
 }

@@ -6,7 +6,7 @@ import base64
 from urllib.parse import quote, urlencode
 from ini import *
 from pathlib import Path
-from urlConfig import proxies
+from urlConfig import httpProxies
 
 includeCondition = (
     r'日本(?!\s*3\b).*|'
@@ -33,11 +33,11 @@ def fetch_config(url):
 
 def fetch_subscribe(url: str) -> str:
     headers = {
-        "User-Agent": "clash-verge/v2.3.1",
+        "User-Agent": "flclash",
         "Accept": "*/*",
         "Accept-Encoding": "identity"
     }
-    resp = requests.get(url, headers=headers, proxies=proxies, timeout=10)
+    resp = requests.get(url, headers=headers, proxies=httpProxies, timeout=10)
     raw = resp.text 
     return resp.text
 
