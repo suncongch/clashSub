@@ -462,7 +462,7 @@ def getUserInfo(temUrl):
     response = requests.get(temUrl,headers=headers)
     # 获取请求的 headers
     headers = response.headers
-    return headers['subscription-userinfo']
+    return headers.get('subscription-userinfo',"none")
 
 def yaml_response(temYaml, filename: str, userinfo: str | None = None):
     yaml_text = yamlToStr(temYaml)
