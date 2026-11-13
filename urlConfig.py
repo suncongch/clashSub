@@ -24,6 +24,6 @@ netflixSubUrl = [
                 ]
 
 httpProxies = {
-    "http": "http://andysun:andysun@andysun.cool:2053",
-    "https": "http://andysun:andysun@andysun.cool:2053",
+    "http": "http://185.220.197.184:41747",
+    "https": "http://185.220.197.184:41747",
 }
