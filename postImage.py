@@ -453,7 +453,7 @@ def ts_to_beijing_str(ts):
 
 def run_http():
     # 启动 HTTP 服务
-    app.run(host='127.0.0.1', port=9001,debug=True)
+    app.run(host='127.0.0.1', port=8000,debug=True)
 
 def run_https():
     # 启动 HTTPS 服务
