@@ -4,7 +4,7 @@ import re
 import requests
 import urllib
 from random import randint, random
-from postImage import thisSubUrl,janSubUrl,netflixSubUrl,justSubUrl
+from urlConfig import thisSubUrl,janSubUrl,netflixSubUrl,justSubUrl
 from flask import Flask, Response
 from ini import *
 from sub import *
