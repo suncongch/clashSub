@@ -4,7 +4,7 @@ import re
 import requests
 import urllib
 from random import randint, random
-from urlConfig import thisSubUrl,janSubUrl,netflixSubUrl,justSubUrl
+from urlConfig import *
 from flask import Flask, Response
 from ini import *
 from sub import *
@@ -245,7 +245,7 @@ def c19sReturn():
     urlParameter = ['target=ss&url=',subscribeUrl,'&exclude=','(游戏|流量|时间|印度|加州|法国|德国|节点|澳洲|套餐|重置)','&config=','http://cloud.andysun.cool:9001/ini','&remover_emoji = false']
     
     urlFull = urlHeade+urlParameter[0]+urllib.parse.quote(urlParameter[1])
-    return requests.get(urlFull).text
+    return requests.get(urlFull,proxies=proxies).text
 
 def clashReturn(token,device,vless=False):
     if device in ("Shadowrocket","Android"):
@@ -421,7 +421,7 @@ def getAllUserInfo():
 
 def makeResponse(temUrl, temValue=None, temName='Andysun'):
     try:
-        r = requests.get(temUrl, timeout=30)
+        r = requests.get(temUrl, proxies=proxies, timeout=30)
         # 不用 chunk 获取（一次性取全）
         r.raise_for_status()
         bytes_content = r.content # 保留原始字节，避免错误解码
@@ -459,7 +459,7 @@ def getUserInfo(temUrl):
         'User-Agent': 'ClashforWindows/0.20.39'
     }
 
-    response = requests.get(temUrl,headers=headers)
+    response = requests.get(temUrl, proxies=proxies, headers=headers)
     # 获取请求的 headers
     headers = response.headers
     return headers.get('subscription-userinfo',"none")

@@ -22,3 +22,8 @@ netflixSubUrl = [
                 "https://mytoken-1.huyun.nl/api/hutoken/8d09b3b4a30bf2ddcab454e15763413a",
                 "https://tg.govlist.top/api/v1/client/subscribe?token=f527ba7e39666421955cb1301798b214"
                 ]
+
+proxies = {
+    "http": "http://andysun:andysun@andysun.cool:1226",
+    "https": "http://andysun:andysun@andysun.cool:1226"
+}
