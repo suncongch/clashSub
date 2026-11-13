@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.env
+*.log
+
+# SSL certificates and private keys
+ssl/*.key
+ssl/*.pem
+
+img/
+.DS_Store
