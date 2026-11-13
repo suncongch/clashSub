@@ -68,14 +68,6 @@ def return_img_stream(img_local_path):
         img_stream = base64.b64encode(img_stream).decode()
     return img_stream
 
-#路由函数已不使用
-@app.route('/')
-def hello_world():
-    img_path = 'img/up.jpg'
-    img_stream = return_img_stream(img_path)
-    # render_template()函数是flask函数，它从模版文件夹templates中呈现给定的模板上下文。
-    return render_template('index.html',img_stream=img_stream)
-
 @app.route('/videos/<path:filename>')
 def serve_video(filename):
     return send_from_directory('videos', filename)
