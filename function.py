@@ -4,7 +4,7 @@ import re
 import requests
 import urllib
 from random import randint, random
-from urlConfig import *
+from urlConfig import janSubUrl, proxies, thisSubUrl, netflixSubUrl, justSubUrl    
 from flask import Flask, Response
 from ini import *
 from sub import *
