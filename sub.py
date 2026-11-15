@@ -2,8 +2,6 @@
 import requests
 import yaml
 import re
-import json
-import base64
 from urllib.parse import quote, urlencode
 from ini import *
 from pathlib import Path
@@ -138,7 +136,7 @@ def add_auto_group(proxy_groups: list[dict], proxies: list[dict]) -> None:
             g["proxies"].insert(0, AUTO_GROUP_NAME)
 
 def build_from_config(config_url: str, sub_urls: list[str], auto_group: bool = False) -> dict:
-    # 1️⃣ 拉 ACL4SSR config
+    # 1️⃣ 拉 分流config
     cfg_text = requests.get(config_url, timeout=15).text
     cfg = parse_acl4ssr_config(cfg_text)
 

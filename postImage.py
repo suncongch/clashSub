@@ -56,14 +56,7 @@ def netflix():
     token = request.args.get("token")
     ua = request.headers.get('User-Agent', '').lower()
     if  token in token_config:
-        return_text = ''
-        appClient = detect_client(ua)
-        print(ua,appClient)
-        if appClient == "clash":
-            return_text = netflixReturn(token,'clash')
-        elif appClient == "shadowRocket":
-            return_text = get_nodes(token,'clash')
-        return return_text
+        return netflixReturn(token,'clash')
     else:
         return "token error"
 
