@@ -1,3 +1,4 @@
+#获取机场订阅并生成 Clash 配置
 import requests
 import yaml
 import re
@@ -6,23 +7,11 @@ import base64
 from urllib.parse import quote, urlencode
 from ini import *
 from pathlib import Path
-from urlConfig import httpProxies
+from urlConfig import httpProxies, includeCondition
 
-includeCondition = (
-    r'日本(?!\s*3\b).*|'
-    r'日本\s*1\s*\[\s*IPv6\s*\]|'
-    r'日本\s*2\s*\[\s*IPv6\s*\]|'
-    r'香港|'
-    r'andy|'
-    r'新加坡(?!\s*3\b).*|'
-    r'新加坡\s*1\s*\[\s*IPv6\s*\]|'
-    r'新加坡\s*2\s*\[\s*IPv6\s*\]|'
-    r'新加坡.*推荐|'
-    r'美国(?!.*海外).*|'
-    r'台湾(?!.*海外).*'
-)
-subscribe_url = "https://xhtoken.huyun.nl/api/xiongtoken/1002261321f54fe532237e5a59b84361"
-config_url = "http://cloud.andysun.cool:9001/ini"
+AUTO_GROUP_NAME = "♻️ 自动选择"
+AUTO_GROUP_REGIONS = ("狮城", "日本", "香港")
+
 
 def fetch_config(url):
     if not url:
@@ -105,7 +94,6 @@ def parse_clash_yaml(text: str) -> dict:
     data.setdefault("proxies", [])
     return data
 
-
 def order_rulesets_by_priority(rulesets: list[dict]) -> list[dict]:
     """Keep ACL4SSR as the base ruleset source, with suncongch overrides first.
 
@@ -129,135 +117,6 @@ def order_rulesets_by_priority(rulesets: list[dict]) -> list[dict]:
 
     return suncongch_rulesets + base_rulesets + terminal_rulesets
 
-def sub():
-    raw = fetch_subscribe(subscribe_url)
-    data = parse_clash_yaml(raw)
-
-    proxies = data.get("proxies", [])
-
-    if includeCondition:
-        proxies = filter_proxies(proxies, includeCondition)
-
-    yaml_text = build_clash_yaml(data, proxies)
-
-    extra = fetch_config(config_url)
-
-    final = merge_config(yaml_text, extra)
-
-    return yaml_text
-
-
-def _link_host(server: str) -> str:
-    return f"[{server}]" if ":" in server and not server.startswith("[") else server
-
-
-def _clash_stream_params(p: dict) -> dict | None:
-    """Clash 传输/加密字段 -> 分享链接 query 参数；不支持的传输返回 None。"""
-    network = p.get("network", "tcp")
-    params = {}
-
-    ws = p.get("ws-opts") or {}
-    if network == "ws" and ws.get("v2ray-http-upgrade"):
-        network = "httpupgrade"
-    params["type"] = network
-
-    if network in ("ws", "httpupgrade"):
-        headers = ws.get("headers") or {}
-        params["path"] = ws.get("path", "/")
-        host = headers.get("Host") or headers.get("host")
-        if host:
-            params["host"] = host
-    elif network == "grpc":
-        params["serviceName"] = (p.get("grpc-opts") or {}).get("grpc-service-name", "")
-    elif network != "tcp":
-        return None
-
-    if p.get("tls"):
-        params["sni"] = p.get("servername") or p.get("sni") or p.get("server")
-        params["fp"] = p.get("client-fingerprint") or "chrome"
-        if p.get("reality-opts"):
-            ro = p["reality-opts"]
-            params["security"] = "reality"
-            params["pbk"] = ro.get("public-key", "")
-            params["sid"] = ro.get("short-id", "")
-        else:
-            params["security"] = "tls"
-            if p.get("alpn"):
-                params["alpn"] = ",".join(p["alpn"])
-    else:
-        params["security"] = "none"
-    return params
-
-
-def clash_proxy_to_link(p: dict) -> str | None:
-    """Clash 节点 -> 分享链接（3x-ui 出站订阅格式）；不支持的返回 None。"""
-    ptype = p.get("type")
-    try:
-        server, port = _link_host(p["server"]), int(p["port"])
-        name = quote(p.get("name", "node"), safe="")
-
-        if ptype == "vmess":
-            params = _clash_stream_params(p)
-            if params is None:
-                return None
-            obj = {
-                "v": "2", "ps": p.get("name", "node"), "add": p["server"],
-                "port": str(port), "id": p["uuid"],
-                "aid": str(p.get("alterId", 0)), "scy": p.get("cipher", "auto"),
-                "net": params["type"], "type": "none",
-                "host": params.get("host", ""),
-                "path": params.get("path", params.get("serviceName", "")),
-                "tls": "tls" if params["security"] == "tls" else "",
-                "sni": params.get("sni", ""), "fp": params.get("fp", ""),
-                "alpn": params.get("alpn", ""),
-            }
-            raw = json.dumps(obj, ensure_ascii=False).encode("utf-8")
-            return "vmess://" + base64.b64encode(raw).decode()
-
-        if ptype == "ss":
-            userinfo = base64.urlsafe_b64encode(
-                f"{p['cipher']}:{p['password']}".encode()
-            ).decode().rstrip("=")
-            return f"ss://{userinfo}@{server}:{port}#{name}"
-
-        if ptype == "hysteria2":
-            params = {"sni": p.get("sni") or p.get("servername") or p.get("server")}
-            if p.get("alpn"):
-                params["alpn"] = ",".join(p["alpn"])
-            if p.get("obfs"):
-                params["obfs"] = p["obfs"]
-                params["obfs-password"] = p.get("obfs-password", "")
-            query = urlencode(params)
-            return (f"hysteria2://{quote(str(p['password']), safe='')}"
-                    f"@{server}:{port}?{query}#{name}")
-
-        params = _clash_stream_params(p)
-        if params is None:
-            return None
-        if ptype == "vless":
-            params["encryption"] = "none"
-            if p.get("flow"):
-                params["flow"] = p["flow"]
-            userinfo = p["uuid"]
-        elif ptype == "trojan":
-            userinfo = quote(str(p["password"]), safe="")
-        else:
-            return None
-        return f"{ptype}://{userinfo}@{server}:{port}?{urlencode(params)}#{name}"
-    except (KeyError, TypeError, ValueError):
-        return None
-
-
-def build_3xui_outbound_subscription(proxies: list[dict]) -> str:
-    """节点列表 -> 3x-ui 出站订阅内容：分享链接逐行排列后整体 Base64。"""
-    links = [link for link in map(clash_proxy_to_link, proxies) if link]
-    return base64.b64encode("\n".join(links).encode("utf-8")).decode()
-
-
-AUTO_GROUP_NAME = "♻️ 自动选择"
-AUTO_GROUP_REGIONS = ("狮城", "日本", "香港")
-
-
 def add_auto_group(proxy_groups: list[dict], proxies: list[dict]) -> None:
     """Add a fallback group ordered 狮城 > 日本 > 香港 (first alive node wins)."""
     members = []
@@ -277,7 +136,6 @@ def add_auto_group(proxy_groups: list[dict], proxies: list[dict]) -> None:
     for g in proxy_groups[1:]:
         if g["name"].endswith("节点选择"):
             g["proxies"].insert(0, AUTO_GROUP_NAME)
-
 
 def build_from_config(config_url: str, sub_urls: list[str], auto_group: bool = False) -> dict:
     # 1️⃣ 拉 ACL4SSR config

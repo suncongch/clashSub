@@ -1,3 +1,4 @@
+# 拉去远端规则并本地化保存，并生成分流配置组
 import hashlib
 import json
 import os
