@@ -5,6 +5,8 @@ from pathlib import Path
 githubConfig = "data/githubConfig.txt"
 netflixConfig = "data/netflixConfig.txt"
 
+hidden_group_names = {"🎯 全球直连", "🛑 全球拦截"} 
+
 includeCondition = (
     r'日本(?!\s*3\b).*|'
     r'日本\s*1\s*\[\s*IPv6\s*\]|'

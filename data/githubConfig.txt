@@ -27,18 +27,20 @@ ruleset=🚀 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/mast
 ruleset=🚀 节点选择,https://raw.githubusercontent.com/suncongch/passWall/main/proxy.list
 ruleset=🚀 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list
 ruleset=🚀 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list
+ruleset=🚀 节点选择,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Ruleset/Binance.list
+ruleset=🚀 节点选择,https://raw.githubusercontent.com/suncongch/passWall/main/porn.list
 ruleset=🅰️ Adobe屏蔽,https://raw.githubusercontent.com/suncongch/passWall/refs/heads/main/adobeBlock
 ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
 ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list
 ;ruleset=🎯 全球直连,[]GEOIP,LAN
 ruleset=🎯 全球直连,[]GEOIP,CN
-ruleset=🐟 漏网之鱼,[]FINAL
+ruleset=🧱 半墙网站,[]FINAL
 
 custom_proxy_group=🚀 节点选择`select`[]DIRECT`.*
 custom_proxy_group=🤖 AI 服务`select`[]🚀 节点选择`(vultr|日本|新加坡|狮城|美国)
 custom_proxy_group=🎯 全球直连`select`[]DIRECT`[]🚀 节点选择
 custom_proxy_group=🛑 全球拦截`select`[]REJECT`[]DIRECT
-custom_proxy_group=🐟 漏网之鱼`select`[]DIRECT`[]🚀 节点选择
+custom_proxy_group=🧱 半墙网站`select`[]DIRECT`[]🚀 节点选择
 custom_proxy_group=🅰️ Adobe屏蔽`select`[]REJECT`[]🚀 节点选择`[]DIRECT`
 
 enable_rule_generator=true

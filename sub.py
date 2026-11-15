@@ -5,7 +5,7 @@ import re
 from urllib.parse import quote, urlencode
 from ini import *
 from pathlib import Path
-from urlConfig import httpProxies, includeCondition
+from urlConfig import httpProxies, includeCondition, hidden_group_names
 
 AUTO_GROUP_NAME = "♻️ 自动选择"
 AUTO_GROUP_REGIONS = ("狮城", "日本", "香港")
@@ -170,6 +170,10 @@ def build_from_config(config_url: str, sub_urls: list[str], auto_group: bool = F
     proxy_groups = build_proxy_groups(cfg, new_proxies)
     if auto_group:
         add_auto_group(proxy_groups, new_proxies)
+    
+    for g in proxy_groups:
+        if g.get("name") in hidden_group_names:
+            g["hidden"] = True
 
     # 5️⃣ rules（可选，先给空）
     rules = []
