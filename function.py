@@ -54,7 +54,7 @@ def netflixReturn(token,device):
     if device in ("Shadowrocket","Android"):
         iniUrl = ini_config[device]
     else:
-        iniUrl = ini_config["unknown"]
+        iniUrl = ini_config["netflix"]
 
     if token in token_config:
         temSubscribeUrl , msg= token_config[token]

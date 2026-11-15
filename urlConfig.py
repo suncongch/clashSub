@@ -55,6 +55,7 @@ ini_config = {
     "Shadowrocket": "http://cloud.andysun.cool:9001/iniMobile",
     "Android": "http://cloud.andysun.cool:9001/iniMobile",
     "unknown": "http://cloud.andysun.cool:9001/iniMobile",
+    "netflix": "http://cloud.andysun.cool:9001/netflixIni"
 }
 
 httpProxies = {
