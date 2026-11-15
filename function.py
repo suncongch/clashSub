@@ -43,7 +43,7 @@ def clashReturn(token,device):
         temSubscribeUrl, msg = token_config[token]
         print(msg)
 
-        yamlFile = build_from_config(iniUrl,temSubscribeUrl)
+        yamlFile = build_from_config(iniUrl,temSubscribeUrl,auto_group=True)
         #save_yaml(yamlFile,"./test.yaml")
         return yaml_response(yamlFile,'Andysun_'+token,None)
     else:
